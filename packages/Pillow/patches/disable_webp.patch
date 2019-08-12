@@ -1,8 +1,34 @@
-diff --git a/setup.py b/setup.py
-index 5ceae34..321fcdd 100755
---- a/setup.py
+diff --git a/setup.bak.py b/setup.py
+index 5ceae34..2a5e829 100755
+--- a/setup.bak.py
 +++ b/setup.py
-@@ -634,40 +634,6 @@ class pil_build_ext(build_ext):
+@@ -237,7 +237,6 @@ ZLIB_ROOT = None
+ IMAGEQUANT_ROOT = None
+ TIFF_ROOT = None
+ FREETYPE_ROOT = None
+-LCMS_ROOT = None
+ 
+ 
+ def _pkg_config(name):
+@@ -272,9 +271,6 @@ class pil_build_ext(build_ext):
+             "jpeg",
+             "tiff",
+             "freetype",
+-            "lcms",
+-            "webp",
+-            "webpmux",
+             "jpeg2000",
+             "imagequant",
+         ]
+@@ -359,7 +355,6 @@ class pil_build_ext(build_ext):
+             TIFF_ROOT=("libtiff-5", "libtiff-4"),
+             ZLIB_ROOT="zlib",
+             FREETYPE_ROOT="freetype2",
+-            LCMS_ROOT="lcms2",
+             IMAGEQUANT_ROOT="libimagequant",
+         ).items():
+             root = globals()[root_name]
+@@ -634,39 +629,6 @@ class pil_build_ext(build_ext):
                      if subdir:
                          _add_directory(self.compiler.include_dirs, subdir, 0)
  
@@ -39,7 +65,50 @@ index 5ceae34..321fcdd 100755
 -                    self, "libwebpdemux"
 -                ):
 -                    feature.webpmux = "libwebpmux"
--
+ 
          for f in feature:
              if not getattr(feature, f) and feature.require(f):
-                 if f in ("jpeg", "zlib"):
+@@ -729,33 +691,6 @@ class pil_build_ext(build_ext):
+                 )
+             )
+ 
+-        if feature.lcms:
+-            extra = []
+-            if sys.platform == "win32":
+-                extra.extend(["user32", "gdi32"])
+-            exts.append(
+-                Extension(
+-                    "PIL._imagingcms",
+-                    ["src/_imagingcms.c"],
+-                    libraries=[feature.lcms] + extra,
+-                )
+-            )
+-
+-        if feature.webp:
+-            libs = [feature.webp]
+-            defs = []
+-
+-            if feature.webpmux:
+-                defs.append(("HAVE_WEBPMUX", None))
+-                libs.append(feature.webpmux)
+-                libs.append(feature.webpmux.replace("pmux", "pdemux"))
+-
+-            exts.append(
+-                Extension(
+-                    "PIL._webp", ["src/_webp.c"], libraries=libs, define_macros=defs
+-                )
+-            )
+-
+         tk_libs = ["psapi"] if sys.platform == "win32" else []
+         exts.append(
+             Extension(
+@@ -797,9 +732,6 @@ class pil_build_ext(build_ext):
+             (feature.imagequant, "LIBIMAGEQUANT"),
+             (feature.tiff, "LIBTIFF"),
+             (feature.freetype, "FREETYPE2"),
+-            (feature.lcms, "LITTLECMS2"),
+-            (feature.webp, "WEBP"),
+-            (feature.webpmux, "WEBPMUX"),
+         ]
+ 
+         all = 1
