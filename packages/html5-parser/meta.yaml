@@ -1,0 +1,18 @@
+package:
+  name: html5-parser
+  version: 0.4.8
+source:
+  sha256: b1ead2784c69cee5d481eb6d75587cc5ea08fc292b127ae08afe7771a6fba101
+  url: https://files.pythonhosted.org/packages/54/10/dd41940feed7a7ca321708a232a6db685aca4dfad2d5cc18aba3028837af/html5-parser-0.4.8.tar.gz
+build:
+  cflags: -I../../../../libxml/libxml2-2.9.9/include -I../../../../libxslt/libxslt-1.1.33/ -Wno-implicit-function-declaration
+  ldflags: -L../../../../libxml/libxml2-2.9.9/.libs/ -L../../../../libxslt/libxslt-1.1.33/libxslt/.libs/
+requirements:
+  run:
+  - lxml
+  - beautifulsoup4
+test:
+  imports:
+  - lxml
+  - lxml.etree
+  - lxml.objectify
